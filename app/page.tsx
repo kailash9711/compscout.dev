@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
-import { Layers, Maximize, Sun, Moon, Check, Copy } from "lucide-react";
+import { Layers, Maximize, Sun, Moon, Check, Copy, Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { ComponentRegistry, componentNames } from "./registry";
 import { getComponentCode } from "./actions";
@@ -48,6 +48,7 @@ export default function ComponentLibrary() {
 
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   useEffect(() => setMounted(true), []);
 
   // Fetch component code when selection changes
@@ -154,15 +155,59 @@ export default function ComponentLibrary() {
       </div>
 
       {/* Main App Container */}
-      <div className="relative z-10 flex h-full w-full max-w-[1200px] bg-[#fafafa] dark:bg-[#18191c] text-zinc-950 dark:text-zinc-100 font-sans selection:bg-zinc-200 dark:selection:bg-zinc-800 text-[14px] border-x border-zinc-200/50 dark:border-zinc-800/50 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_0_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden transition-colors duration-500">
+      <div className="relative z-10 flex flex-col md:flex-row h-full w-full max-w-[1200px] bg-[#fafafa] dark:bg-[#18191c] text-zinc-950 dark:text-zinc-100 font-sans selection:bg-zinc-200 dark:selection:bg-zinc-800 text-[14px] border-x border-zinc-200/50 dark:border-zinc-800/50 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_0_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden transition-colors duration-500">
         
-        {/* Left Sidebar */}
-        <aside className="w-56 border-r border-zinc-200 dark:border-zinc-800/60 bg-white/90 dark:bg-[#18191c]/90 backdrop-blur-md flex flex-col shrink-0 transition-colors duration-500">
-          <div className="h-12 flex items-center justify-between px-5 border-b border-zinc-200 dark:border-zinc-800/60 transition-colors duration-500">
+        {/* Mobile Header */}
+        <div className="md:hidden flex items-center justify-between h-14 px-5 border-b border-zinc-200 dark:border-zinc-800/60 bg-white/90 dark:bg-[#18191c]/90 backdrop-blur-md z-40 transition-colors duration-500">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                playClickSound();
+                setIsMobileMenuOpen(!isMobileMenuOpen);
+              }}
+              className="p-1.5 -ml-1.5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-md transition-colors"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
             <a href="https://compscout.dev" target="_blank" rel="noreferrer" className="flex items-center gap-2 font-semibold tracking-tight hover:opacity-80 transition-opacity">
-              <Layers className="w-4 h-4 text-zinc-900 dark:text-zinc-100 transition-colors" />
+              <Layers className="w-4 h-4 text-[#3b82f6] transition-colors" />
               <span className="text-sm">CompScout Free UI</span>
             </a>
+          </div>
+          <div className="flex items-center gap-2">
+            <a href="https://github.com/kailash9711/compscout.dev" target="_blank" rel="noreferrer" className="p-1.5 text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors" title="GitHub Repository">
+              <GithubIcon className="w-4 h-4" />
+            </a>
+            {mounted && (
+              <button 
+                onClick={() => {
+                  playClickSound();
+                  setTheme(theme === 'dark' ? 'light' : 'dark');
+                }}
+                className="p-1.5 text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-md transition-colors" 
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile Overlay */}
+        {isMobileMenuOpen && (
+          <div 
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+
+        {/* Left Sidebar */}
+        <aside className={`absolute inset-y-0 left-0 z-50 w-64 md:w-56 border-r border-zinc-200 dark:border-zinc-800/60 bg-white dark:bg-[#18191c] md:bg-white/90 md:dark:bg-[#18191c]/90 backdrop-blur-md flex flex-col shrink-0 transition-transform duration-300 md:transition-colors md:duration-500 md:relative md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"}`}>
+          <div className="h-14 md:h-12 flex items-center justify-between px-5 border-b border-zinc-200 dark:border-zinc-800/60 transition-colors duration-500">
+            <a href="https://compscout.dev" target="_blank" rel="noreferrer" className="hidden md:flex items-center gap-2 font-semibold tracking-tight hover:opacity-80 transition-opacity">
+              <Layers className="w-4 h-4 text-[#3b82f6] transition-colors" />
+              <span className="text-sm">CompScout Free UI</span>
+            </a>
+            <span className="md:hidden font-semibold tracking-tight">Menu</span>
             <a href="https://github.com/kailash9711/compscout.dev" target="_blank" rel="noreferrer" className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors" title="GitHub Repository">
               <GithubIcon className="w-4 h-4" />
             </a>
@@ -177,8 +222,11 @@ export default function ComponentLibrary() {
                     playClickSound();
                     setSelectedComponent(comp);
                     setIsCodeView(false);
+                    if (window.innerWidth < 768) {
+                      setIsMobileMenuOpen(false);
+                    }
                   }}
-                  className={`text-[13px] px-3 py-1.5 rounded-lg text-left transition-colors ${
+                  className={`text-[13px] px-3 py-2 md:py-1.5 rounded-lg text-left transition-colors ${
                     selectedComponent === comp
                       ? "bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-zinc-100 font-medium"
                       : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-zinc-200"
@@ -206,8 +254,8 @@ export default function ComponentLibrary() {
 
         {/* Main Canvas Area */}
         <main className="flex-1 relative flex flex-col overflow-hidden bg-[#fafafa] dark:bg-[#131417]/80 transition-colors duration-500">
-          {/* Top bar */}
-          <header className="h-12 border-b border-zinc-200 dark:border-zinc-800/60 bg-white/50 dark:bg-[#18191c]/50 backdrop-blur-sm flex items-center justify-between px-5 shrink-0 z-20 transition-colors duration-500">
+          {/* Top bar (Desktop Only since mobile has its own header) */}
+          <header className="hidden md:flex h-12 border-b border-zinc-200 dark:border-zinc-800/60 bg-white/50 dark:bg-[#18191c]/50 backdrop-blur-sm items-center justify-between px-5 shrink-0 z-20 transition-colors duration-500">
             <div className="flex items-center gap-2">
               <span className="text-[13px] font-medium text-zinc-900 dark:text-zinc-100 transition-colors">{selectedComponent}</span>
               
