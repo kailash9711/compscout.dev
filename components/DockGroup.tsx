@@ -8,11 +8,11 @@ export interface DockGroupAvatarProps {
 }
 
 const team = [
-  { id: "1", name: "Emma", img: "/avatar/bt7zf5dcfn4vvury1i6a.webp" },
-  { id: "2", name: "Alex", img: "/avatar/h6ayxz0ewcpim6twzitl.webp" },
-  { id: "3", name: "Sarah", img: "/avatar/labjj25d1oln29chvxq9.webp" },
-  { id: "4", name: "David", img: "/avatar/mezlylrpq1acez8o02ft.webp" },
-  { id: "5", name: "Lisa", img: "/avatar/ob8p7hqfvdvyolx88872.webp" },
+  { id: "1", name: "Emma", img: "https://compscout.dev/avatar/bt7zf5dcfn4vvury1i6a.webp" },
+  { id: "2", name: "Alex", img: "https://compscout.dev/avatar/h6ayxz0ewcpim6twzitl.webp" },
+  { id: "3", name: "Sarah", img: "https://compscout.dev/avatar/labjj25d1oln29chvxq9.webp" },
+  { id: "4", name: "David", img: "https://compscout.dev/avatar/mezlylrpq1acez8o02ft.webp" },
+  { id: "5", name: "Lisa", img: "https://compscout.dev/avatar/ob8p7hqfvdvyolx88872.webp" },
 ];
 
 function DockItem({ member, mouseX }: { member: any; mouseX: any }) {
